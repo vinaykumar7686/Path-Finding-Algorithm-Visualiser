@@ -131,4 +131,79 @@ def draw(win, grid, rows, width):
 
     pygame.display.update()
 
+def get_clicked_pos(pos, rows, width):
+    '''
+    Takes the ciurrent position of mouse, number of rows and width of frame and returns the index of grid element to which the mouse is pointing.
+    '''
+    gap = width // rows
+    x, y = pos
 
+    row = x // gap
+    col = y // gap
+
+    return row, col
+
+
+
+def main(win, width):
+    ROWS = int(input("Enter the size of grid: "))
+
+    grid = make_grid(ROWS, width)
+
+    start = None
+    end = None
+
+    run = True
+    started = False
+
+    while run:
+        draw(win, grid, ROWS, width)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+            # If algorithm has started then user can't edit grid or do anything else, other than exiting.
+            if started:
+                continue
+            
+            # Left Mouse Button
+            if pygame.mouse.get_pressed()[0]:
+                pos = pygame.mouse.get_pos()
+                row, col = get_clicked_pos(pos, ROWS, width)
+                spot = grid[row][col]
+
+                # If start is not defined and the point clicked is not equal to end the make the point as start
+                if not start and spot!=end:
+                    spot.make_start()
+                    start = spot
+
+                # If start is defined and end is not defined and the point clicked is not equal to start the make the point as end
+                elif not end and spot!=start:
+                    spot.make_end()
+                    end = spot
+                # if start and end have beend defined and the spot is not equal to start or end then define the spot as barrier
+                elif spot!=start and spot!=end:
+                    spot.make_barrier()
+
+            # Right Mouse Button
+            if pygame.mouse.get_pressed()[2]:
+                pos = pygame.mouse.get_pos()
+                row, col = get_clicked_pos(pos, ROWS, width)
+                spot = grid[row][col]
+
+                spot.reset()
+
+                if spot == start:
+                    start = None
+                elif spot == end:
+                    end = None
+
+            # Event to trigger Algorithm
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and not started:
+                    pass
+
+
+    pygame.quit()
+
+main(WIN, 800)
