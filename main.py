@@ -13,6 +13,7 @@ BLUE = (0,0,255)
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 
+GREY = (210,210,210)
 VIOLET = (148, 0, 211) 
 INDIGO = (75, 0, 130)
 YELLOW = (255, 255, 0)
@@ -81,4 +82,53 @@ class Spot:
 
     def __lt__(self, other):
         return False
+
+
+
+def h(p1, p2):
+    '''
+    This functions is used to return the manhattan distance between two points passed as arguments
+    '''
+    x1, y1 = p1
+    x2, y2 = p2
+
+    return abs(x2-x1)+abs(y2-y1)
+
+def make_grid(rows, width):
+    '''
+    This Functions defined rows*rows number of Spots and adds the into a grid (a nested list) and return it.
+    '''
+    grid = []
+
+    gap = width//rows
+
+    for i in range(0, rows):
+        grid.append([])
+        for j in range(0, rows):
+            grid[i].append((Spot(i, j, gap, rows)))
+
+
+    return grid
+
+def draw_grid(win, rows, width):
+    gap =  width // rows
+
+    # Draw Horizontal Lines
+    for i in range(rows):
+        pygame.draw.line(win, GREY, (0, i*gap), (width, i*gap))
+
+        # Draw Vertical Lines
+        for j in range(rows):
+            pygame.draw.line(win, GREY, (j*gap, 0), (j*gap, width))
+
+def draw(win, grid, rows, width):
+    win.fill(WHITE)
+    for row in grid:
+        for spot in row:
+            spot.draw(win)
+    
+    draw_grid(win, rows, width)
+
+    pygame.display.update()
+
 
