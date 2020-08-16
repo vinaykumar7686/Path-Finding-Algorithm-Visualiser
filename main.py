@@ -78,7 +78,21 @@ class Spot:
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
 
     def update_neighbors(self, grid):
-        pass
+        # Down Test
+        if self.row<self.total_rows-1 and not grid[self.row+1][self.col].is_barrier():
+            self.neighbor.append(grid[self.row+1][self.col])
+        
+        # Up Test
+        if self.row>0 and not grid[self.row-1][self.col].is_barrier():
+            self.neighbor.append(grid[self.row-1][self.col])
+
+        # Left Test
+        if self.col>0 and not grid[self.row][self.col-1].is_barrier():
+            self.neighbor.append(grid[self.row][self.col-1])
+
+        # Right Test
+        if self.col<self.total_rows-1 and not grid[self.row][self.col+1].is_barrier():
+            self.neighbor.append(grid[self.row][self.col+1])
 
     def __lt__(self, other):
         return False
