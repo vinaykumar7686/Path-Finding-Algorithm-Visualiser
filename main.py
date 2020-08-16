@@ -28,7 +28,7 @@ class Spot:
         self.x = width * row
         self.y = width * col
         self.color = WHITE
-        self.neighbor = []
+        self.neighbors = []
         self.width = width
         self.total_rows = total_rows
 
@@ -80,19 +80,19 @@ class Spot:
     def update_neighbors(self, grid):
         # Down Test
         if self.row<self.total_rows-1 and not grid[self.row+1][self.col].is_barrier():
-            self.neighbor.append(grid[self.row+1][self.col])
+            self.neighbors.append(grid[self.row+1][self.col])
         
         # Up Test
         if self.row>0 and not grid[self.row-1][self.col].is_barrier():
-            self.neighbor.append(grid[self.row-1][self.col])
+            self.neighbors.append(grid[self.row-1][self.col])
 
         # Left Test
         if self.col>0 and not grid[self.row][self.col-1].is_barrier():
-            self.neighbor.append(grid[self.row][self.col-1])
+            self.neighbors.append(grid[self.row][self.col-1])
 
         # Right Test
         if self.col<self.total_rows-1 and not grid[self.row][self.col+1].is_barrier():
-            self.neighbor.append(grid[self.row][self.col+1])
+            self.neighbors.append(grid[self.row][self.col+1])
 
     def __lt__(self, other):
         return False
@@ -170,14 +170,14 @@ def algorithm(draw, grid, start, end):
 
     # Initialising G-Score (Distance Travelled to reach that spot)
     g_score = {spot: float("inf") for row in grid for spot in row}
-    gscore[start] = 0
+    g_score[start] = 0
 
-    # Initialisinf H-Score (Distance to be travelled from their to reach destination)
-    fscore = {spot: float("inf")for row in grid for spot in row}
-    fscore[start] = h(start.get_pos(), end.get_pos())
+    # Initialising F-Score (Total Distance to be travelled from starting to end through this spot to reach destination)
+    f_score = {spot: float("inf") for row in grid for spot in row}
+    f_score[start] = h(start.get_pos(), end.get_pos())
 
     # A set to keep track whether or not a given value exists in Priority Queue (Used a set here as PriorityQueue doest support testing presence.)
-    open_set_hash = set(start)
+    open_set_hash = {start}
 
     while not open_set.empty():
         
@@ -198,12 +198,12 @@ def algorithm(draw, grid, start, end):
             # If the new gscore of neighbors of current is less than the score that was before.
             if temp_g_score<g_score[neighbor]:
                 came_from[neighbor] = current
-                gscore[neighbor] = temp_g_score
-                fscore[neighbor] = temp_g_score + h(neighbor.get_pos(), end.get_pos())
+                g_score[neighbor] = temp_g_score
+                f_score[neighbor] = temp_g_score + h(neighbor.get_pos(), end.get_pos())
 
                 if neighbor not in open_set_hash:
                     count+=1
-                    open_set.put(fscore[neighbor], count, neighbor)
+                    open_set.put((f_score[neighbor], count, neighbor))
                     open_set_hash.add(neighbor)
                     neighbor.make_open()
 
@@ -219,7 +219,7 @@ def algorithm(draw, grid, start, end):
 
 
 def main(win, width):
-    ROWS = int(input("Enter the size of grid: "))
+    ROWS = 50#int(input("Enter the size of grid: "))
 
     grid = make_grid(ROWS, width)
 
