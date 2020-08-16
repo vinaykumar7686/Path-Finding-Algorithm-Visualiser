@@ -157,6 +157,12 @@ def get_clicked_pos(pos, rows, width):
 
     return row, col
 
+def reconstruct_path(came_from, current, draw):
+    while current in came_from:
+        current = came_from[current]
+        current.make_path()
+        draw()
+
 def algorithm(draw, grid, start, end):
     # count variable is used in case of conflict when two values in priority queue have same priority
     count = 0
@@ -190,6 +196,9 @@ def algorithm(draw, grid, start, end):
         open_set_hash.remove(current)
 
         if current == end:
+            reconstruct_path(came_from, end, draw)
+            end.make_end()
+            start.make_start()
             return True
         
         for neighbor in current.neighbors:
@@ -213,10 +222,6 @@ def algorithm(draw, grid, start, end):
             current.make_closed()
 
     return False
-
-
-        
-
 
 def main(win, width):
     ROWS = 50#int(input("Enter the size of grid: "))
@@ -278,6 +283,11 @@ def main(win, width):
                         for spot in row:
                             spot.update_neighbors(grid)
                     algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end)
+                
+                if event.key == pygame.K_ESCAPE:
+                    start = None
+                    end = None
+                    grid = make_grid(ROWS, width)
 
     pygame.quit()
 
