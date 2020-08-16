@@ -179,7 +179,37 @@ def algorithm(draw, grid, start, end):
     # A set to keep track whether or not a given value exists in Priority Queue (Used a set here as PriorityQueue doest support testing presence.)
     open_set_hash = set(start)
 
-    
+    while not open_set.empty():
+        
+        # In case user wanys to exit while the algorith is running.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        current = open_set.get()[2]
+        open_set_hash.remove(current)
+
+        if current == end:
+            return True
+        
+        for neighbor in current.neighbors:
+            temp_g_score = g_score[current]+1
+
+            # If the new gscore of neighbors of current is less than the score that was before.
+            if temp_g_score<g_score[neighbor]:
+                came_from[neighbor] = current
+                gscore[neighbor] = temp_g_score
+                fscore[neighbor] = temp_g_score + h(neighbor.get_pos(), end.get_pos())
+
+                if neighbor not in open_set_hash:
+                    count+=1
+                    open_set.put(fscore[neighbor], count, neighbor)
+                    open_set_hash.add(neighbor)
+                    neighbor.make_open()
+
+
+        
+
 
 def main(win, width):
     ROWS = int(input("Enter the size of grid: "))
