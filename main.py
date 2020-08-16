@@ -157,7 +157,29 @@ def get_clicked_pos(pos, rows, width):
 
     return row, col
 
+def algorithm(draw, grid, start, end):
+    # count variable is used in case of conflict when two values in priority queue have same priority
+    count = 0
+    # Defined a Priority Queue
+    open_set = PriorityQueue()
 
+    # Added start position to the Queue
+    open_set.put((0, count, start))
+    # To keep track of path
+    came_from = {}
+
+    # Initialising G-Score (Distance Travelled to reach that spot)
+    g_score = {spot: float("inf") for row in grid for spot in row}
+    gscore[start] = 0
+
+    # Initialisinf H-Score (Distance to be travelled from their to reach destination)
+    fscore = {spot: float("inf")for row in grid for spot in row}
+    fscore[start] = h(start.get_pos(), end.get_pos())
+
+    # A set to keep track whether or not a given value exists in Priority Queue (Used a set here as PriorityQueue doest support testing presence.)
+    open_set_hash = set(start)
+
+    
 
 def main(win, width):
     ROWS = int(input("Enter the size of grid: "))
@@ -215,7 +237,9 @@ def main(win, width):
             # Event to trigger Algorithm
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and not started:
-                    pass
+                    for row in grid:
+                        for spot in row:
+                            spot.update_neighbors()
 
 
     pygame.quit()
