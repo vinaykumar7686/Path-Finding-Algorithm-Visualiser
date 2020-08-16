@@ -207,6 +207,11 @@ def algorithm(draw, grid, start, end):
                     open_set_hash.add(neighbor)
                     neighbor.make_open()
 
+        draw()
+        
+        if current!=start:
+            current.make_closed()
+
 
         
 
