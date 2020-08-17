@@ -8,6 +8,7 @@ WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("A* Path Finding Algorithm")
 
 RED = (255,0,0)
+WAYS = (217, 252, 152)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
 WHITE = (255,255,255)
@@ -36,7 +37,7 @@ class Spot:
         return self.row, self.col
 
     def is_closed(self):
-        return self.color == RED
+        return self.color == WAYS
 
     def is_barrier(self):
         return self.color == BLACK
@@ -56,7 +57,7 @@ class Spot:
         self.color = WHITE
 
     def make_closed(self):
-        self.color = RED
+        self.color = WAYS
 
     def make_barrier(self):
         self.color = BLACK
