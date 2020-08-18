@@ -164,7 +164,7 @@ def reconstruct_path(came_from, current, draw):
         current.make_path()
         draw()
 
-def algorithm(draw, grid, start, end):
+def a_star_algorithm(draw, grid, start, end):
     # count variable is used in case of conflict when two values in priority queue have same priority
     count = 0
     # Defined a Priority Queue
@@ -214,6 +214,61 @@ def algorithm(draw, grid, start, end):
                 if neighbor not in open_set_hash:
                     count+=1
                     open_set.put((f_score[neighbor], count, neighbor))
+                    open_set_hash.add(neighbor)
+                    neighbor.make_open()
+
+        draw()
+        
+        if current!=start:
+            current.make_closed()
+
+    return False
+
+def dijkstra_algorithm(draw, grid, start, end):
+    # count variable is used in case of conflict when two values in priority queue have same priority
+    count = 0
+    # Defined a Priority Queue
+    open_set = PriorityQueue()
+
+    # Added start position to the Queue
+    open_set.put((0, count, start))
+    # To keep track of path
+    came_from = {}
+
+    # Initialising G-Score (Distance Travelled to reach that spot)
+    g_score = {spot: float("inf") for row in grid for spot in row}
+    g_score[start] = 0
+
+    # A set to keep track whether or not a given value exists in Priority Queue (Used a set here as PriorityQueue doest support testing presence.)
+    open_set_hash = {start}
+
+    while not open_set.empty():
+        
+        # In case user wanys to exit while the algorith is running.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        current = open_set.get()[2]
+        open_set_hash.remove(current)
+
+        if current == end:
+            reconstruct_path(came_from, end, draw)
+            end.make_end()
+            start.make_start()
+            return True
+        
+        for neighbor in current.neighbors:
+            temp_g_score = g_score[current]+1
+
+            # If the new gscore of neighbors of current is less than the score that was before.
+            if temp_g_score<g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = temp_g_score
+
+                if neighbor not in open_set_hash:
+                    count+=1
+                    open_set.put((g_score[neighbor], count, neighbor))
                     open_set_hash.add(neighbor)
                     neighbor.make_open()
 
@@ -283,7 +338,8 @@ def main(win, width):
                     for row in grid:
                         for spot in row:
                             spot.update_neighbors(grid)
-                    algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end)
+                    dijkstra_algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end)
+                    a_star_algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end)
                 
                 if event.key == pygame.K_ESCAPE:
                     start = None
