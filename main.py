@@ -2,10 +2,24 @@ import pygame
 import time
 from queue import PriorityQueue
 
+try:
+    ROWS = int(input("Enter the size of grid (e.g., 25)"))
+except Exception:
+    print('Due to invalid input recieved, the number of rows has been set as 50')
+    ROWS = 50
+
+try:
+    algo = int(input("Enter 1 For Dijkstra's Algorithm, 2 for A* Algorithm"))
+except:
+    print('Due to invalid input recieved A* Algorithm will be implemented as Default.')
+    algo = 2
+
 WIDTH = 800
+GAP = 800//ROWS
+
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 
-pygame.display.set_caption("A* Path Finding Algorithm")
+pygame.display.set_caption("Path Finding Algorithm Visualiser")
 
 RED = (255,0,0)
 WAYS = (217, 252, 152)
@@ -115,26 +129,23 @@ def make_grid(rows, width):
     '''
     grid = []
 
-    gap = width//rows
-
     for i in range(0, rows):
         grid.append([])
         for j in range(0, rows):
-            grid[i].append((Spot(i, j, gap, rows)))
+            grid[i].append((Spot(i, j, GAP, rows)))
 
 
     return grid
 
 def draw_grid(win, rows, width):
-    gap =  width // rows
 
     # Draw Horizontal Lines
     for i in range(rows):
-        pygame.draw.line(win, GREY, (0, i*gap), (width, i*gap))
+        pygame.draw.line(win, GREY, (0, i*GAP), (width, i*GAP))
 
         # Draw Vertical Lines
         for j in range(rows):
-            pygame.draw.line(win, GREY, (j*gap, 0), (j*gap, width))
+            pygame.draw.line(win, GREY, (j*GAP, 0), (j*GAP, width))
 
 def draw(win, grid, rows, width):
     win.fill(WHITE)
@@ -150,11 +161,10 @@ def get_clicked_pos(pos, rows, width):
     '''
     Takes the ciurrent position of mouse, number of rows and width of frame and returns the index of grid element to which the mouse is pointing.
     '''
-    gap = width // rows
     x, y = pos
 
-    row = x // gap
-    col = y // gap
+    row = x // GAP
+    col = y // GAP
 
     return row, col
 
@@ -165,6 +175,7 @@ def reconstruct_path(came_from, current, draw):
         draw()
 
 def a_star_algorithm(draw, grid, start, end):
+    pygame.display.set_caption("A* Path Finding Algorithm Visualiser")
     # count variable is used in case of conflict when two values in priority queue have same priority
     count = 0
     # Defined a Priority Queue
@@ -225,6 +236,7 @@ def a_star_algorithm(draw, grid, start, end):
     return False
 
 def dijkstra_algorithm(draw, grid, start, end):
+    pygame.display.set_caption("Dijkstra's Path Finding Algorithm Visualiser")
     # count variable is used in case of conflict when two values in priority queue have same priority
     count = 0
     # Defined a Priority Queue
@@ -280,7 +292,7 @@ def dijkstra_algorithm(draw, grid, start, end):
     return False
 
 def main(win, width):
-    ROWS = 50#int(input("Enter the size of grid: "))
+    #ROWS = 50#int(input("Enter the size of grid: "))
 
     grid = make_grid(ROWS, width)
 
@@ -338,8 +350,10 @@ def main(win, width):
                     for row in grid:
                         for spot in row:
                             spot.update_neighbors(grid)
-                    dijkstra_algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end)
-                    a_star_algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end)
+                    if algo == 1:
+                        dijkstra_algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end)
+                    elif algo ==2:
+                        a_star_algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end)
                 
                 if event.key == pygame.K_ESCAPE:
                     start = None
