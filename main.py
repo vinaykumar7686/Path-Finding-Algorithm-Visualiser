@@ -47,6 +47,8 @@ class Spot:
         self.width = width
         self.total_rows = total_rows
 
+        self.weight = 1
+
     def get_pos(self):
         return self.row, self.col
 
@@ -74,7 +76,9 @@ class Spot:
         self.color = WAYS
 
     def make_barrier(self):
-        self.color = BLACK
+        #self.color = BLACK
+        self.weight = 10
+        self.color = (238,238,238)
     
     def make_open(self):
         self.color = GREEN
@@ -214,7 +218,7 @@ def a_star_algorithm(draw, grid, start, end):
             return True
         
         for neighbor in current.neighbors:
-            temp_g_score = g_score[current]+1
+            temp_g_score = g_score[current]+neighbor.weight
 
             # If the new gscore of neighbors of current is less than the score that was before.
             if temp_g_score<g_score[neighbor]:
@@ -271,7 +275,7 @@ def dijkstra_algorithm(draw, grid, start, end):
             return True
         
         for neighbor in current.neighbors:
-            temp_g_score = g_score[current]+1
+            temp_g_score = g_score[current]+neighbor.weight
 
             # If the new gscore of neighbors of current is less than the score that was before.
             if temp_g_score<g_score[neighbor]:
