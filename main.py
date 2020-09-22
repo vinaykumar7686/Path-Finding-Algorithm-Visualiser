@@ -58,6 +58,9 @@ class Spot:
     def is_barrier(self):
         return self.color == BLACK
     
+    def is_weighted(self):
+        return self.color == (238,238,238)
+    
     def is_open(self):
         return self.color == GREEN
 
@@ -76,12 +79,16 @@ class Spot:
         self.color = WAYS
 
     def make_barrier(self):
+        self.color = BLACK
+
+    def add_weight(self):
         #self.color = BLACK
-        self.weight = 10
+        self.weight = self.weight+ 10
         self.color = (238,238,238)
     
     def make_open(self):
-        self.color = GREEN
+        if not self.is_weighted():
+            self.color = GREEN
 
     def make_start(self):
         self.color = ORANGE
@@ -333,7 +340,13 @@ def main(win, width):
                     end = spot
                 # if start and end have beend defined and the spot is not equal to start or end then define the spot as barrier
                 elif spot!=start and spot!=end:
-                    spot.make_barrier()
+                    '''if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_w:
+                            while event.key != pygame.K_w:
+                                pass'''
+                    spot.add_weight()
+                    print(spot.is_weighted())
+                    #spot.make_barrier()
 
             # Right Mouse Button
             if pygame.mouse.get_pressed()[2]:
