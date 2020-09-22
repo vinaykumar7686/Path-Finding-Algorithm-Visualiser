@@ -3,13 +3,13 @@ import time
 from queue import PriorityQueue
 
 try:
-    ROWS = int(input("Enter the size of grid (e.g., 25)"))
+    ROWS = int(input("Enter the size of grid (e.g., 25): "))
 except Exception:
     print('Due to invalid input recieved, the number of rows has been set as 50')
     ROWS = 50
 
 try:
-    algo = int(input("Enter 1 For Dijkstra's Algorithm, 2 for A* Algorithm"))
+    algo = int(input("Enter 1 For Dijkstra's Algorithm, 2 for A* Algorithm: "))
 except:
     print('Due to invalid input recieved A* Algorithm will be implemented as Default.')
     algo = 2
@@ -21,18 +21,20 @@ WIN = pygame.display.set_mode((WIDTH, WIDTH))
 
 pygame.display.set_caption("Path Finding Algorithm Visualiser")
 
-RED = (255,0,0)
-WAYS = (217, 252, 152)
-GREEN = (0,255,0)
-BLUE = (0,0,255)
+C_VISITED = (232, 252, 194)
+C_BOUNDARY = (177,204,116)
+
 WHITE = (255,255,255)
-BLACK = (0,0,0)
 
 GREY = (210,210,210)
-VIOLET = (148, 0, 211) 
-INDIGO = (75, 0, 130)
-YELLOW = (255, 255, 0)
+BLACK = (0,0,0)
+
 ORANGE = (255, 127, 0)
+VIOLET = (148, 0, 211) 
+
+C_FINAL_PATH = (245, 255, 144)
+C_JUMPED = (223, 227, 120)
+
 
 
 class Spot:
@@ -52,17 +54,17 @@ class Spot:
     def get_pos(self):
         return self.row, self.col
 
-    def is_closed(self):
-        return self.color == WAYS
+    def is_visited(self):
+        return self.color == C_VISITED
 
     def is_barrier(self):
         return self.color == BLACK
     
     def is_weighted(self):
-        return self.color == (238,238,238)
+        return self.color == (238,238,238) or self.color == (235, 216, 216)
     
     def is_open(self):
-        return self.color == GREEN
+        return self.color == C_BOUNDARY
 
     def is_start(self):
         return self.color == ORANGE
@@ -75,8 +77,11 @@ class Spot:
     def reset(self):
         self.color = WHITE
 
-    def make_closed(self):
-        self.color = WAYS
+    def make_visited(self):
+        if self.is_weighted():
+            self.color = (235, 216, 216)
+        else:
+            self.color = C_VISITED
 
     def make_barrier(self):
         self.color = BLACK
@@ -88,7 +93,7 @@ class Spot:
     
     def make_open(self):
         if not self.is_weighted():
-            self.color = GREEN
+            self.color = C_BOUNDARY
 
     def make_start(self):
         self.color = ORANGE
@@ -97,7 +102,10 @@ class Spot:
         self.color = VIOLET
 
     def make_path(self):
-        self.color = YELLOW
+        if self.weight>1:
+            self.color = C_JUMPED
+        else:
+            self.color = C_FINAL_PATH
 
 
     def draw(self, win):
@@ -242,7 +250,7 @@ def a_star_algorithm(draw, grid, start, end):
         draw()
         
         if current!=start:
-            current.make_closed()
+            current.make_visited()
 
     return False
 
@@ -298,7 +306,7 @@ def dijkstra_algorithm(draw, grid, start, end):
         draw()
         
         if current!=start:
-            current.make_closed()
+            current.make_visited()
 
     return False
 
@@ -345,7 +353,6 @@ def main(win, width):
                             while event.key != pygame.K_w:
                                 pass'''
                     spot.add_weight()
-                    print(spot.is_weighted())
                     #spot.make_barrier()
 
             # Right Mouse Button
