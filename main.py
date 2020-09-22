@@ -34,6 +34,7 @@ VIOLET = (148, 0, 211)
 
 C_FINAL_PATH = (245, 255, 144)
 C_JUMPED = (223, 227, 120)
+C_BOUNDARY_WEIGHT = (197, 222, 201)
 
 
 
@@ -61,7 +62,7 @@ class Spot:
         return self.color == BLACK
     
     def is_weighted(self):
-        return self.color == (238,238,238) or self.color == (235, 216, 216)
+        return self.color == (238,238,238) or self.color == (235, 216, 216) or self.color == C_BOUNDARY_WEIGHT
     
     def is_open(self):
         return self.color == C_BOUNDARY
@@ -71,8 +72,6 @@ class Spot:
 
     def is_end(self):
         return self.color == VIOLET
-
-
 
     def reset(self):
         self.color = WHITE
@@ -92,7 +91,9 @@ class Spot:
         self.color = (238,238,238)
     
     def make_open(self):
-        if not self.is_weighted():
+        if self.is_weighted():
+            self.color = C_BOUNDARY_WEIGHT
+        else:
             self.color = C_BOUNDARY
 
     def make_start(self):
