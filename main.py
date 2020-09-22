@@ -322,6 +322,8 @@ def main(win, width):
     run = True
     started = False
 
+    make_barriers = False
+
     while run:
         draw(win, grid, ROWS, width)
         for event in pygame.event.get():
@@ -349,11 +351,10 @@ def main(win, width):
                     end = spot
                 # if start and end have beend defined and the spot is not equal to start or end then define the spot as barrier
                 elif spot!=start and spot!=end:
-                    '''if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_w:
-                            while event.key != pygame.K_w:
-                                pass'''
-                    spot.add_weight()
+                    if make_barriers:
+                        spot.make_barrier()
+                    else:
+                        spot.add_weight()
                     #spot.make_barrier()
 
             # Right Mouse Button
@@ -371,6 +372,9 @@ def main(win, width):
 
             # Event to trigger Algorithm
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    make_barriers = not make_barriers
+
                 if event.key == pygame.K_SPACE and not started:
                     for row in grid:
                         for spot in row:
