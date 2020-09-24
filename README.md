@@ -8,4 +8,6 @@ Algorithms Currently Implemented:
 - Dijkstra's Path Finding Algorithm: Dijkstra's algorithm is an algorithm for finding the shortest paths between nodes in a graph, which may represent, for example, road networks.
                                      It solves the single-source shortest path problem with non-negative edge weight.The major disadvantage of the algorithm is the fact that it                                        does a blind search there by consuming a lot of time waste of necessary resources.
                                      
-In Progress: Weighted obstacles 
+### Added Weighted obstacles 
+
+#### Next up: Work on enabling diagonal movement.
